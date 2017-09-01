@@ -1,10 +1,18 @@
 static int ledPins[] = {3, 5, 6, 9, 10, 11};
 static int ledCount = 6;
 static int buttonPin = 2;
-static int bounceDelay = 10000; //10 milliseconds
+static long int bounceDelay = 500000; //microseconds
 
 int mode = 0;
 //Modes: Off, On, Dim, Flash, Scan
+
+void switchMode() {
+
+  mode++;
+  if (mode > 2) mode = 0;
+  delayMicroseconds(bounceDelay); //Debouncing
+
+}
 
 void setup() {
   for (int i = 0; i < ledCount; i++) pinMode(ledPins[i], OUTPUT);
@@ -29,13 +37,7 @@ void loop() {
         break;
 
     } //End swtich
+  } //End for
 
 }
 
-void switchMode() {
-
-  mode++;
-  if (mode > 2) mode = 0;
-  delayMicroseconds(bounceDelay); //Debouncing
-
-}
