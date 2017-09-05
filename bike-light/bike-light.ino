@@ -1,12 +1,12 @@
 //PoE Lab 1: Bike light
 //Annie Kroo, Adam Selker, 2017-09
-//Lights, flashes, and pulses a number of LED's, using a button to change mode and
-//  a potentiometer to change speed.  
+//Lights, flashes, and pulses a number of LED's, using a button to 
+// change mode and a potentiometer to change speed.  
 
 static int ledPins[] = {3, 5, 6, 9, 10, 11}; //These are all PWM pins
 static int ledCount = 6;
 static int buttonPin = 2;
-static int potPin = A0; //The wiper; should vary from ~0v to ~5v (0 to 1024)
+static int potPin = A0; //The wiper; should vary from 0 to 1024
 static long int bounceDelay = 50000; //microseconds
 static float speedMult = 5; 
 
@@ -18,22 +18,25 @@ int timer = 0;
 
 void switchMode() { //This runs whenever the button pin goes high
 
-  noInterrupts(); //disable interrupts -- not sure if necessary; better safe than sorry
+  noInterrupts(); //disable interrupts  while in an interrupt
   mode++;
   if (mode > 6) mode = 0; //So the modes loop
   delayMicroseconds(bounceDelay); //Debouncing
-  while (digitalRead(buttonPin) == HIGH) delayMicroseconds(10000); //Wait until the button is released
+  while (digitalRead(buttonPin) == HIGH) 
+    delayMicroseconds(10000); //Wait until the button is released
   delayMicroseconds(bounceDelay); //Debouncing
   interrupts();
 
 }
 
 void setup() {
-  for (int i = 0; i < ledCount; i++) pinMode(ledPins[i], OUTPUT); //Set the LED pins to outputs
+  for (int i = 0; i < ledCount; i++) 
+    pinMode(ledPins[i], OUTPUT); //Set the LED pins to outputs
   pinMode(potPin, INPUT); //And set the pot and button pins to inputs
   pinMode(buttonPin, INPUT);
 
-  attachInterrupt(digitalPinToInterrupt(buttonPin), switchMode, RISING); //Interrupt on the button pin to switch modes
+  attachInterrupt(digitalPinToInterrupt(buttonPin), switchMode, RISING); 
+    //Interrupt on the button pin to switch modes
 
   lastTime = millis(); //Initialize the timer thing
 
@@ -58,24 +61,29 @@ void loop() {
         else digitalWrite(ledPins[i], LOW);
         break;
       case 4: //Pulse
-        analogWrite(ledPins[i], ((sin(float(timer) / 1000.0 * 2.0*PI)) + 1) / 2 * 256);
+        analogWrite(ledPins[i], \
+          ((sin(float(timer) / 1000.0 * 2.0*PI)) + 1) / 2 * 256);
         break;
       case 5: //Scan
-        if (((timer + (1000 / ledCount)*i) % 1000) > ( 1000 - 1000 / ledCount)) digitalWrite(ledPins[i], HIGH);
+        if (((timer + (1000 / ledCount)*i) % 1000)>(1000 - 1000/ledCount)) 
+          digitalWrite(ledPins[i], HIGH);
         else digitalWrite(ledPins[i], LOW);
         break;
       case 6: //Pulse Scan
-        analogWrite(ledPins[i], ((sin(float(timer + (1000 / ledCount*i)) / 1000.0 * 2.0*PI)) + 1) / 2 * 256);
+        analogWrite(ledPins[i], \
+          ((sin(float(timer+(1000/ledCount*i)) / 1000.0*2.0*PI))+1) / 2*256);
       default:
-        //Do nothing -- this should never happen, but leaving LEDs as they are is a reasonable fallback
+        //Do nothing -- should never happen, leave LEDs as fallback
         break;
 
     } //End swtich
   } //End for
 
-  timer += int( (millis() - lastTime) * (float(analogRead(potPin)) * speedMult / 1024.0) ); //Adjust the timer based on the pot pin and the last loop time
+  timer += int((millis()-lastTime) * \
+    (float(analogRead(potPin)) * speedMult/1024.0));
+    //Adjust the timer based on the pot pin and the last loop time
   timer = timer % 1000; //Everything is mod 1000, this prevents overflow etc.
-  lastTime = millis(); //Set lastTime so we'll know how long the next loop takes
+  lastTime = millis(); //So we'll know how long the next loop takes
 
   //Serial.println(lastTime);
 
