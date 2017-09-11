@@ -7,7 +7,8 @@ static int ledPins[] = {3, 5, 6, 9, 10, 11}; //These are all PWM pins
 static int ledCount = 6;
 static int buttonPin = 2;
 static int potPin = A0; //The wiper; should vary from 0 to 1024
-static unsigned int bounceDelay = 16382; //microseconds
+static unsigned int bounceDelay = 16382; //microseconds -- 16383 max
+static unsigned int bounceMult = 5; //Multiplier for more delay
 static float speedMult = 5; 
 
 volatile int mode = 0;
@@ -22,10 +23,12 @@ void switchMode() { //This runs whenever the button pin goes high
   //Serial.print(mode);
   mode++;
   if (mode > 6) mode = 0; //So the modes loop
-  delayMicroseconds(bounceDelay); //Debouncing
+  for (int i = 0; i < bounceMult; i++)
+    delayMicroseconds(bounceDelay); //Debouncing
   while (digitalRead(buttonPin) == HIGH) 
     delayMicroseconds(1000); //Wait until the button is released
-  delayMicroseconds(bounceDelay); //Debouncing
+  for (int i = 0; i < bounceMult; i++)
+    delayMicroseconds(bounceDelay); //Debouncing
   interrupts();
 
 }
