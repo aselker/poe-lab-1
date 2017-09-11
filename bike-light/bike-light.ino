@@ -62,7 +62,7 @@ void loop() {
         break;
       case 4: //Pulse
         analogWrite(ledPins[i], \
-          ((sin(float(timer) / 1000.0 * 2.0*PI)) + 1) / 2 * 256);
+          ((sin(float(timer) / 1000.0 * 2.0*PI)) + 1) / 2 * 255);
         break;
       case 5: //Scan
         if (((timer + (1000 / ledCount)*i) % 1000)>(1000 - 1000/ledCount)) 
@@ -71,7 +71,7 @@ void loop() {
         break;
       case 6: //Pulse Scan
         analogWrite(ledPins[i], \
-          ((sin(float(timer+(1000/ledCount*i)) / 1000.0*2.0*PI))+1) / 2*256);
+          ((sin(float(timer+(1000/ledCount*i)) / 1000.0*2.0*PI))+1) / 2*255);
       default:
         //Do nothing -- should never happen, leave LEDs as fallback
         break;
